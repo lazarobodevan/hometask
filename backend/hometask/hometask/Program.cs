@@ -8,6 +8,16 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options => {
+    options.AddPolicy("AllowAll",
+        policy => {
+            policy
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
+
 builder.Services
     .AddDatabase(builder.Configuration)
     .AddRepositories()
@@ -34,6 +44,8 @@ if (app.Environment.IsDevelopment()) {
 if (!app.Environment.IsDevelopment()) {
     app.UseHttpsRedirection();
 }
+
+app.UseCors("AllowAll");
 
 app.MapControllers();
 

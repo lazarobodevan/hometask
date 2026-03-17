@@ -8,3 +8,9 @@
 **/obj/
 **/packages/
 **/TestResults/
+
+.vscode/
+*.suo
+*.user
+*.userossc
+*.sln.docstates
