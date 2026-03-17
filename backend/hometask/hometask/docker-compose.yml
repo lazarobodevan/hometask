@@ -1,0 +1,20 @@
+﻿services:
+    postgres_hometask:
+        image: postgres:15
+        restart: always
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        environment:
+            POSTGRES_USER: ${DB_USER}
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
+            POSTGRES_DB: ${DB_NAME}
+        ports:
+            - "5432:5432"
+        networks:
+            - app-network
+volumes:
+    postgres_data:
+
+networks:
+    app-network:
+        driver: bridge

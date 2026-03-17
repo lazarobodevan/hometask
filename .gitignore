@@ -1,0 +1,10 @@
+**/.env*
+**/appsettings.json
+**/appsettings.Development.json
+**/appsettings.Staging.json
+
+**/.vs/
+**/bin/
+**/obj/
+**/packages/
+**/TestResults/
