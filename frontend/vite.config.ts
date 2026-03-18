@@ -36,7 +36,7 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         runtimeCaching: [
           {
-            urlPattern: /^https:\/\/localhost:44372\/api\/.*/i,
+            urlPattern: /^https:\/\/api301\.lazarobodevan\.cc\/api\/.*/i,
             handler: 'NetworkFirst',
             options: {
               cacheName: 'api-cache',
@@ -52,10 +52,12 @@ export default defineConfig({
           }
         ],
         navigateFallback: '/offline.html',
-        navigateFallbackDenylist: [/\/api/]
+        navigateFallbackDenylist: [/\/api/],
+        skipWaiting: true,
+        clientsClaim: true,
       },
       devOptions: {
-        enabled: true,
+        enabled: false,
         type: 'module',
         navigateFallback: '/offline.html'
       }
