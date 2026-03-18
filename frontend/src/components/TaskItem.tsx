@@ -19,6 +19,7 @@ import {
 import type { Task, UpdateTaskDoneDto } from '../types/schedule';
 import { markAsDone, markAsUndone } from '../services/schedules';
 import toast from 'react-hot-toast';
+import { formatCompletedDate } from '../utils/dateUtils';
 
 interface TaskItemProps {
   task: Task;
@@ -148,7 +149,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, weekStart, onTaskUpdate }) =>
             </Box>
             {task.completedBy && task.completedAt && (
               <Typography variant="caption" color="text.secondary" component="span">
-                Concluído por {task.completedBy}
+                Concluído por {task.completedBy} - {formatCompletedDate(task.completedAt)}
               </Typography>
             )}
           </Box>

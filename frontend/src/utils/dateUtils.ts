@@ -31,3 +31,21 @@ export const isDateInCurrentWeek = (beginDate: string, endDate: string): boolean
   
   return today >= start && today <= end;
 };
+
+export const formatCompletedDate = (dateTimeStr: string): string => {
+  if (!dateTimeStr) return '';
+  
+  try {
+    const date = new Date(dateTimeStr);
+    
+    return date.toLocaleString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    }).replace(',', ' às');
+  } catch (error) {
+    return dateTimeStr;
+  }
+};

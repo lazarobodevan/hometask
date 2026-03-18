@@ -9,6 +9,9 @@ import PrivateRoute from './components/PrivateRoute';
 import { AuthProvider } from './contexts/AuthContext';
 import darkTheme from './theme/darkTheme';
 import './index.css';
+import { registerSW } from 'virtual:pwa-register';
+
+registerSW();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

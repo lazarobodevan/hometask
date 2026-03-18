@@ -13,6 +13,7 @@ import {
 import { CleaningServices } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import InstallButton from '../components/InstallButton';
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -45,6 +46,7 @@ const Login: React.FC = () => {
 
   return (
     <Container component="main" maxWidth="xs">
+      <InstallButton/>
       <Box
         sx={{
           minHeight: '100vh',

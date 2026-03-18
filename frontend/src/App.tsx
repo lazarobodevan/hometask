@@ -19,6 +19,7 @@ import { getSchedules } from './services/schedules';
 import { useAuth } from './contexts/AuthContext';
 import { isDateInCurrentWeek } from './utils/dateUtils';
 import type { Schedule } from './types/schedule';
+import InstallButton from './components/InstallButton';
 
 function App() {
   const [schedules, setSchedules] = useState<Schedule[]>([]);
@@ -27,13 +28,12 @@ function App() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const currentWeekRef = useRef<HTMLDivElement>(null);
-  
+
   const { user, signOut } = useAuth();
 
   useEffect(() => {
     const loadSchedules = async () => {
       try {
-        setLoading(true);
         const data = await getSchedules();
         setSchedules(data);
       } catch (err) {
@@ -48,7 +48,10 @@ function App() {
 
   useEffect(() => {
     if (!loading && currentWeekRef.current && containerRef.current) {
-      currentWeekRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      currentWeekRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
     }
   }, [loading]);
 
@@ -60,97 +63,74 @@ function App() {
     setAnchorEl(null);
   };
 
-  if (loading) {
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
-        <CircularProgress />
-      </Box>
-    );
-  }
-
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      {/* Toaster para notificações */}
-      <Toaster
-        position="bottom-center"
-        reverseOrder={false}
-        gutter={8}
-        toastOptions={{
-          duration: 4000,
-          style: {
-            background: '#333',
-            color: '#fff',
-          },
-          success: {
-            duration: 3000,
-            iconTheme: {
-              primary: '#4caf50',
-              secondary: '#fff',
-            },
-          },
-          error: {
-            duration: 5000,
-            iconTheme: {
-              primary: '#f44336',
-              secondary: '#fff',
-            },
-          },
-        }}
-      />
+    <>
+      {/* 🔥 BOTÃO SEMPRE EXISTE */}
+      <InstallButton />
 
-      <AppBar position="sticky">
-        <Toolbar>
-          <CleaningServices sx={{ mr: 2 }} />
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Escalas de Limpeza
-          </Typography>
-          
-          {user && (
-            <div>
-              <IconButton onClick={handleMenu} color="inherit">
-                <Avatar>{user.name.charAt(0).toUpperCase()}</Avatar>
-              </IconButton>
-              <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
-                <MenuItem disabled>{user.name}</MenuItem>
-                <MenuItem onClick={signOut}>Sair</MenuItem>
-              </Menu>
-            </div>
-          )}
-        </Toolbar>
-      </AppBar>
+      {loading ? (
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+          <CircularProgress />
+        </Box>
+      ) : (
+        <Box sx={{ flexGrow: 1 }}>
+          <Toaster position="bottom-center" />
 
-      <Container 
-        maxWidth="md" 
-        sx={{ 
-          mt: 2, 
-          mb: 2, 
-          maxHeight: 'calc(100vh - 64px)',
-          overflow: 'auto',
-        }}
-        ref={containerRef}
-      >
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {error}
-          </Alert>
-        )}
+          <AppBar position="sticky">
+            <Toolbar>
+              <CleaningServices sx={{ mr: 2 }} />
+              <Typography sx={{ flexGrow: 1 }}>
+                Escalas de Limpeza
+              </Typography>
 
-        {schedules.map((schedule) => {
-          const currentWeek = isDateInCurrentWeek(schedule.beginDate, schedule.endDate);
-          return (
-            <div
-              key={schedule.beginDate}
-              ref={currentWeek ? currentWeekRef : null}
-            >
-              <ScheduleCard 
-                schedule={schedule} 
-                isCurrentWeek={currentWeek}
-              />
-            </div>
-          );
-        })}
-      </Container>
-    </Box>
+              {user && (
+                <>
+                  <IconButton onClick={handleMenu} color="inherit">
+                    <Avatar>{user.name.charAt(0).toUpperCase()}</Avatar>
+                  </IconButton>
+                  <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
+                    <MenuItem disabled>{user.name}</MenuItem>
+                    <MenuItem onClick={signOut}>Sair</MenuItem>
+                  </Menu>
+                </>
+              )}
+            </Toolbar>
+          </AppBar>
+
+          <Container
+            maxWidth="md"
+            sx={{
+              mt: 2,
+              mb: 2,
+              maxHeight: 'calc(100vh - 64px)',
+              overflow: 'auto',
+            }}
+            ref={containerRef}
+          >
+            {error && <Alert severity="error">{error}</Alert>}
+
+            {schedules.map((schedule) => {
+              const currentWeek = isDateInCurrentWeek(
+                schedule.beginDate,
+                schedule.endDate
+              );
+
+              return (
+                <div
+                  key={schedule.beginDate}
+                  ref={currentWeek ? currentWeekRef : null}
+                >
+                  <ScheduleCard
+                    schedule={schedule}
+                    isCurrentWeek={currentWeek}
+                  />
+                </div>
+              );
+            })}
+          </Container>
+        </Box>
+      )}
+    </>
   );
 }
 
