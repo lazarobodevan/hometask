@@ -19,8 +19,11 @@ namespace hometask.Entities {
         [ForeignKey(nameof(PersonId))]
         public Person Person { get; set; } = default!;
 
-        public Guid? CompletedById { get; set; }
+        public string? CompletedById { get; set; } = string.Empty;
         public Person? CompletedBy { get; set; }
+
+        [Required]
+        public DateOnly WeekStart { get; set; }
 
         [Required]
         public DateTime CompletedAt { get; set; } = DateTime.UtcNow;

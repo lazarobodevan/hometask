@@ -1,6 +1,8 @@
 ﻿using hometask.Data;
 using hometask.Data.Repositories;
 using hometask.Data.Seeds;
+using hometask.Services;
+using hometask.Services.Impl;
 using hometask.UseCases;
 using Microsoft.EntityFrameworkCore;
 using Scrutor;
@@ -37,6 +39,13 @@ namespace hometask.DI {
             .AddClasses(classes => classes.AssignableTo(typeof(IUseCase)))
             .AsSelfWithInterfaces()
             .WithScopedLifetime());
+
+            return services;
+        }
+
+        public static IServiceCollection AddServices(this IServiceCollection services) {
+
+            services.AddScoped<IRotationService, RotationService>();
 
             return services;
         }

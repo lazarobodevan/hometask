@@ -16,3 +16,8 @@ export interface Schedule {
   endDate: string;
   items: Task[];
 }
+
+export interface UpdateTaskDoneDto {
+  taskId: string;
+  weekStart: string;
+}

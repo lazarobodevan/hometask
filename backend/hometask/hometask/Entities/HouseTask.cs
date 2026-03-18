@@ -16,7 +16,10 @@ namespace hometask.Entities {
         [Required]
         public int RotationIndex { get; set; } = 0;
 
+        public DateOnly RotationStartDate { get; set; }
+
         public List<HouseTaskParticipant> Participants { get; set; } = new();
+        public List<HouseTaskCompletion> Completions { get; set; } = new ();
 
     }
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -6,17 +6,13 @@ import {
   Box,
   Chip,
   List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
-  Checkbox,
   Paper,
 } from '@mui/material';
 import {
   CalendarToday,
-  Person,
-  Room,
 } from '@mui/icons-material';
+import { formatDateRange, formatDateWithWeekday } from '../utils/dateUtils';
+import TaskItem from './TaskItem';
 import type { Schedule } from '../types/schedule';
 
 interface ScheduleCardProps {
@@ -25,22 +21,29 @@ interface ScheduleCardProps {
 }
 
 const ScheduleCard: React.FC<ScheduleCardProps> = ({ schedule, isCurrentWeek }) => {
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('pt-BR', { 
-      day: '2-digit', 
-      month: '2-digit' 
-    });
-  };
+  const [tasks, setTasks] = useState(schedule.items);
 
   // Agrupar tarefas por data
-  const tasksByDate = schedule.items.reduce((acc, task) => {
+  const tasksByDate = tasks.reduce((acc, task) => {
     if (!acc[task.date]) {
       acc[task.date] = [];
     }
     acc[task.date].push(task);
     return acc;
-  }, {} as Record<string, typeof schedule.items>);
+  }, {} as Record<string, typeof tasks>);
+
+  const handleTaskUpdate = (taskId: string, completed: boolean) => {
+    setTasks(prevTasks =>
+      prevTasks.map(task =>
+        task.taskId === taskId ? { ...task, completed } : task
+      )
+    );
+  };
+
+  // Calcular progresso da semana
+  const totalTasks = tasks.length;
+  const completedTasks = tasks.filter(t => t.completed).length;
+  const progress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
   return (
     <Card 
@@ -55,20 +58,52 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({ schedule, isCurrentWeek }) 
           <Box display="flex" alignItems="center" gap={1}>
             <CalendarToday color="primary" />
             <Typography variant="h6">
-              {formatDate(schedule.beginDate)} - {formatDate(schedule.endDate)}
+              {formatDateRange(schedule.beginDate, schedule.endDate)}
             </Typography>
           </Box>
-          {isCurrentWeek && (
+          
+          <Box display="flex" alignItems="center" gap={1}>
+            {isCurrentWeek && (
+              <Chip 
+                label="Semana Atual" 
+                color="primary" 
+                size="small"
+                icon={<CalendarToday />}
+              />
+            )}
             <Chip 
-              label="Semana Atual" 
-              color="primary" 
+              label={`${completedTasks}/${totalTasks}`}
+              color={progress === 100 ? "success" : "default"}
               size="small"
-              icon={<CalendarToday />}
+              variant="outlined"
             />
-          )}
+          </Box>
         </Box>
 
-        {Object.entries(tasksByDate).map(([date, tasks]) => (
+        {/* Barra de progresso visual */}
+        {totalTasks > 0 && (
+          <Box 
+            sx={{ 
+              width: '100%', 
+              height: 4, 
+              bgcolor: 'background.paper',
+              borderRadius: 2,
+              mb: 2,
+              overflow: 'hidden'
+            }}
+          >
+            <Box 
+              sx={{ 
+                width: `${progress}%`, 
+                height: '100%', 
+                bgcolor: progress === 100 ? 'success.main' : 'primary.main',
+                transition: 'width 0.3s ease',
+              }} 
+            />
+          </Box>
+        )}
+
+        {Object.entries(tasksByDate).map(([date, dateTasks]) => (
           <Box key={date} sx={{ mt: 2 }}>
             <Typography 
               variant="subtitle2" 
@@ -76,66 +111,17 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({ schedule, isCurrentWeek }) 
               gutterBottom
               sx={{ textTransform: 'capitalize' }}
             >
-              {new Date(date).toLocaleDateString('pt-BR', { 
-                weekday: 'long',
-                day: '2-digit',
-                month: '2-digit'
-              })}
+              {formatDateWithWeekday(date)}
             </Typography>
             <Paper variant="outlined" sx={{ bgcolor: 'background.paper' }}>
               <List dense disablePadding>
-                {tasks.map((task) => (
-                  <ListItem 
+                {dateTasks.map((task) => (
+                  <TaskItem
                     key={task.taskId}
-                    divider
-                    sx={{ 
-                      py: 1.5,
-                      '&:last-child': { 
-                        borderBottom: 'none' 
-                      } 
-                    }}
-                  >
-                    <ListItemIcon sx={{ minWidth: 40 }}>
-                      <Checkbox 
-                        edge="start" 
-                        checked={task.completed}
-                        disabled
-                        size="small"
-                      />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={
-                        <Typography variant="body2" fontWeight="medium">
-                          {task.taskName}
-                        </Typography>
-                      }
-                      secondary={
-                        <Box 
-                          component="span" 
-                          sx={{ 
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            gap: 2,
-                            mt: 0.5,
-                            flexWrap: 'wrap'
-                          }}
-                        >
-                          <Box component="span" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                            <Person sx={{ fontSize: 16, color: 'text.secondary' }} />
-                            <Typography variant="caption" color="text.secondary" component="span">
-                              {task.responsibleName}
-                            </Typography>
-                          </Box>
-                          <Box component="span" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                            <Room sx={{ fontSize: 16, color: 'text.secondary' }} />
-                            <Typography variant="caption" color="text.secondary" component="span">
-                              {task.areaName}
-                            </Typography>
-                          </Box>
-                        </Box>
-                      }
-                    />
-                  </ListItem>
+                    task={task}
+                    weekStart={schedule.beginDate}
+                    onTaskUpdate={handleTaskUpdate}
+                  />
                 ))}
               </List>
             </Paper>

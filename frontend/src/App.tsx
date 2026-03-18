@@ -13,9 +13,11 @@ import {
   Avatar,
 } from '@mui/material';
 import { CleaningServices } from '@mui/icons-material';
+import { Toaster } from 'react-hot-toast';
 import ScheduleCard from './components/ScheduleCard';
 import { getSchedules } from './services/schedules';
 import { useAuth } from './contexts/AuthContext';
+import { isDateInCurrentWeek } from './utils/dateUtils';
 import type { Schedule } from './types/schedule';
 
 function App() {
@@ -27,13 +29,6 @@ function App() {
   const currentWeekRef = useRef<HTMLDivElement>(null);
   
   const { user, signOut } = useAuth();
-
-  const isCurrentWeek = (beginDate: string, endDate: string) => {
-    const today = new Date();
-    const start = new Date(beginDate);
-    const end = new Date(endDate);
-    return today >= start && today <= end;
-  };
 
   useEffect(() => {
     const loadSchedules = async () => {
@@ -75,6 +70,34 @@ function App() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
+      {/* Toaster para notificações */}
+      <Toaster
+        position="bottom-center"
+        reverseOrder={false}
+        gutter={8}
+        toastOptions={{
+          duration: 4000,
+          style: {
+            background: '#333',
+            color: '#fff',
+          },
+          success: {
+            duration: 3000,
+            iconTheme: {
+              primary: '#4caf50',
+              secondary: '#fff',
+            },
+          },
+          error: {
+            duration: 5000,
+            iconTheme: {
+              primary: '#f44336',
+              secondary: '#fff',
+            },
+          },
+        }}
+      />
+
       <AppBar position="sticky">
         <Toolbar>
           <CleaningServices sx={{ mr: 2 }} />
@@ -113,7 +136,7 @@ function App() {
         )}
 
         {schedules.map((schedule) => {
-          const currentWeek = isCurrentWeek(schedule.beginDate, schedule.endDate);
+          const currentWeek = isDateInCurrentWeek(schedule.beginDate, schedule.endDate);
           return (
             <div
               key={schedule.beginDate}

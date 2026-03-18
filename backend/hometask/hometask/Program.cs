@@ -21,7 +21,8 @@ builder.Services.AddCors(options => {
 builder.Services
     .AddDatabase(builder.Configuration)
     .AddRepositories()
-    .AddUseCases();
+    .AddUseCases()
+    .AddServices();
 
 builder.Services.AddControllers(options => {})
     .AddJsonOptions(options => {

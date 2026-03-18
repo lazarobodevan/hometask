@@ -46,24 +46,29 @@ namespace hometask.Data.Seeds {
                 }
             };
 
+            var baseDate = new DateOnly(2026, 3, 16);
+
             List<HouseTask> tasks = new() {
                 new HouseTask() {
                     HouseAreaId = houseAreas.Where(x => x.Name == "Sala").Single().Id,
                     Name = "Limpar sala",
                     Id = Guid.NewGuid(),
                     RotationIndex = 2,
+                    RotationStartDate = baseDate
                 },
                 new HouseTask() {
                     HouseAreaId = houseAreas.Where(x => x.Name == "Cozinha").Single().Id,
                     Name = "Limpar cozinha",
                     Id = Guid.NewGuid(),
                     RotationIndex = 0,
+                    RotationStartDate = baseDate
                 },
                 new HouseTask() {
                     HouseAreaId = houseAreas.Where(x => x.Name == "Banheiro").Single().Id,
                     Name = "Limpar banheiro",
                     Id = Guid.NewGuid(),
                     RotationIndex = 1,
+                    RotationStartDate = baseDate
                 }
             };
 

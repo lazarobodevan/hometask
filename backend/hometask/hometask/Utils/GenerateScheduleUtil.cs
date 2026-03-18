@@ -39,6 +39,9 @@ namespace hometask.Utils {
 
                     var responsible = participants[index];
 
+                    var completion = task.Completions
+                        .FirstOrDefault(c => c.WeekStart == beginDate);
+
                     schedule.Items.Add(new ScheduleItemDto {
                         Date = beginDate,
                         TaskId = task.Id,
@@ -47,9 +50,9 @@ namespace hometask.Utils {
                         AreaName = task.HouseArea?.Name ?? "",
                         ResponsibleId = responsible.PersonId,
                         ResponsibleName = responsible.Person.Name,
-                        Completed = false,
-                        CompletedBy = null,
-                        CompletedAt = null
+                        Completed = completion is not null,
+                        CompletedBy = completion?.CompletedBy?.Name,
+                        CompletedAt = completion?.CompletedAt
                     });
                 }
 

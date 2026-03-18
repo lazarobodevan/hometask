@@ -10,6 +10,10 @@ namespace hometask.Data {
             modelBuilder.Entity<HouseTaskParticipant>()
                 .HasKey(x => new { x.HouseTaskId, x.PersonId });
 
+            modelBuilder.Entity<HouseTaskCompletion>()
+                .HasIndex(x => new { x.HouseTaskId, x.WeekStart })
+                .IsUnique();
+
             base.OnModelCreating(modelBuilder);
         }
 
