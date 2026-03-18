@@ -10,8 +10,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'offline.html'],
       manifest: {
-        name: 'Tasks Domésticas',
-        short_name: 'TasksDom',
+        name: '301',
+        short_name: '301',
         description: 'Aplicativo de gerenciamento de tarefas domésticas',
         theme_color: '#90caf9',
         background_color: '#121212',
