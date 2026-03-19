@@ -14,6 +14,7 @@ import { CleaningServices } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import InstallButton from '../components/InstallButton';
+import UpdateAppButton from '../components/UpdateAppButton';
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -46,6 +47,7 @@ const Login: React.FC = () => {
 
   return (
     <Container component="main" maxWidth="xs">
+      <UpdateAppButton />
       <InstallButton/>
       <Box
         sx={{
@@ -70,7 +72,7 @@ const Login: React.FC = () => {
           </Avatar>
           
           <Typography component="h1" variant="h5" sx={{ mt: 2, mb: 3 }}>
-            Tasks Domésticas
+            Apto 301
           </Typography>
 
           {error && (

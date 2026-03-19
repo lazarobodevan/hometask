@@ -54,6 +54,12 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, weekStart, onTaskUpdate }) =>
       
       setCompleted(newCompletedState);
       onTaskUpdate(task.taskId, newCompletedState);
+
+      toast.dismiss(loadingToast);
+      toast.success(
+        newCompletedState ? 'Tarefa concluída com sucesso!' : 'Tarefa reaberta com sucesso!',
+        { duration: 3000 }
+      );
       
       // Mostrar feedback visual
       setShowFeedback(true);

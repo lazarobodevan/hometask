@@ -11,7 +11,14 @@ import darkTheme from './theme/darkTheme';
 import './index.css';
 import { registerSW } from 'virtual:pwa-register';
 
-registerSW();
+export const updateSW = registerSW({
+  onNeedRefresh() {
+    window.dispatchEvent(new Event('sw-update-available'));
+  },
+  onOfflineReady() {
+    console.log('App pronto para offline');
+  },
+});
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
