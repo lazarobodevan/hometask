@@ -76,7 +76,18 @@ function App() {
         <Box sx={{ flexGrow: 1 }}>
           <Toaster position="bottom-center" />
 
-          <AppBar position="sticky">
+          <AppBar 
+            position="fixed" 
+            sx={{
+              top: 0,
+              left: 0,
+              right: 0,
+              zIndex: 1100,
+              // Para iOS, respeitar a área segura (Dynamic Island/Notch)
+              paddingTop: 'env(safe-area-inset-top)',
+              height: 'auto',
+            }}
+          >
             <Toolbar>
               <CleaningServices sx={{ mr: 2 }} />
               <Typography sx={{ flexGrow: 1 }}>
